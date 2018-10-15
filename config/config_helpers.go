@@ -84,6 +84,8 @@ func executeTerragruntHelperFunction(functionName string, parameters string, inc
 		return getEnvironmentVariable(parameters, terragruntOptions)
 	case "get_tfvars_dir":
 		return getTfVarsDir(terragruntOptions)
+	case "get_tfvars_dir_base":
+		return getTfVarsDirBase(terragruntOptions)
 	case "get_parent_tfvars_dir":
 		return getParentTfVarsDir(include, terragruntOptions)
 	case "get_aws_account_id":
@@ -171,6 +173,15 @@ func getTfVarsDir(terragruntOptions *options.TerragruntOptions) (string, error) 
 	}
 
 	return filepath.ToSlash(filepath.Dir(terragruntConfigFileAbsPath)), nil
+}
+
+func getTfVarsDirBase(terragruntOptions *options.TerragruntOptions) (string, error) {
+	tfVarsDir, err := getTfVarsDir(terragruntOptions)
+	if err != nil {
+		return "", errors.WithStackTrace(err)
+	}
+
+	return filepath.Base(tfVarsDir), nil
 }
 
 // Return the parent directory where the Terragrunt configuration file lives
